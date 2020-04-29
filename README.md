@@ -1,18 +1,19 @@
-# aiomysimple
-<p align="center">
+# AioMySimple
 
-<a href="https://pypi.python.org/pypi/aiomysimple">
-<img src="https://img.shields.io/pypi/v/aiomysimple.svg" /></a>
-<a href="https://travis-ci.org/Starwort/aiomysimple"><img src="https://travis-ci.org/Starwort/aiomysimple.svg?branch=master" /></a>
-</p>
-A simpler wrapper for aiomysql
+[![Licence: GPL v3](https://img.shields.io/badge/Licence-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
-## Features
--   TODO
+AioMySimple is a simpler interface for AioMySQL
 
-# Credits
-This package was created with Cookiecutter and the `cs01/cookiecutter-pypackage` project template.
+```py
+import aiomysimple
 
-[Cookiecutter](https://github.com/audreyr/cookiecutter)
-
-[cs01/cookiecutter-pypackage](https://github.com/cs01/cookiecutter-pypackage)
+db = aiomysimple.Database(
+    host="127.0.0.1", port=3306, user="root", password="", db="test_pymysql"
+)
+my_table = db.get_table("my_table", "id")
+async for row in await my_table.search():
+    print(row["my_key"])
+    await row.update(my_key=row["my_key"] + 1)
+result = await my_table.search()
+print((await result[3])["my_key"])
+```
