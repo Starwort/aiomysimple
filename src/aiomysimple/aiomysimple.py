@@ -42,39 +42,39 @@ class Operation:
         self.value = value
 
     @classmethod
-    def lt(cls, value: typing.Any):
+    def lt(cls, value: typing.Any) -> Operation:
         return cls("<", value)
 
     @classmethod
-    def gt(cls, value: typing.Any):
+    def gt(cls, value: typing.Any) -> Operation:
         return cls(">", value)
 
     @classmethod
-    def eq(cls, value: typing.Any):
+    def eq(cls, value: typing.Any) -> Operation:
         return cls("=", value)
 
     @classmethod
-    def ne(cls, value: typing.Any):
+    def ne(cls, value: typing.Any) -> Operation:
         return cls("!=", value)
 
     @classmethod
-    def le(cls, value: typing.Any):
+    def le(cls, value: typing.Any) -> Operation:
         return cls("<=", value)
 
     @classmethod
-    def ge(cls, value: typing.Any):
+    def ge(cls, value: typing.Any) -> Operation:
         return cls(">=", value)
 
     @classmethod
-    def not_(cls, value: typing.Any):
+    def not_(cls, value: typing.Any) -> Operation:
         return cls("NOT", value)
 
     @classmethod
-    def order_by(cls, key: str):
+    def order_by(cls, key: str) -> Operation:
         return cls("ORDER BY", key)
 
     @classmethod
-    def any_of(cls, *args, **kwargs):
+    def any_of(cls, *args, **kwargs) -> Operation:
         if args and not kwargs:
             return cls("IN", args)
         elif kwargs and not args:
@@ -82,18 +82,27 @@ class Operation:
         else:
             raise TypeError("invalid query for any_of")
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         if self.operation == "IN":
-            return "IN(" + ", ".join(repr(i) for i in self.value) + ")"
+            return "IN(" + ", ".join(normalise(i) for i in self.value) + ")"
         elif self.operation == "AnyOf":
             return "({})".format(
                 " OR ".join(kw_to_query(k, v) for k, v in self.value.items())
             )
         else:
-            return self.operation + repr(self.value)
+            return self.operation + normalise(self.value)
 
 
-def kw_to_query(name: str, value: typing.Union[Operation, str]):
+def normalise(value: typing.Any) -> str:
+    if isinstance(value, bool):
+        return repr(value).lower()
+    elif value is None:
+        return "null"
+    else:
+        return repr(value)
+
+
+def kw_to_query(name: str, value: typing.Union[Operation, str]) -> str:
     if isinstance(value, str):
         value = Operation.eq(value)
     return name + repr(value)
@@ -161,6 +170,7 @@ class Table:
 
     async def search(self, *args, **kwargs):
         order_by = None
+        args = list(args)
         if args and isinstance(args[0], Operation) and args[0].operation == "ORDER BY":
             order_by = args.pop(0).value
         if args or kwargs:
