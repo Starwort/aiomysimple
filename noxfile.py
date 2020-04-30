@@ -59,7 +59,8 @@ def build(session):
     session.install("setuptools")
     session.install("wheel")
     session.install("twine")
-    session.run("rm", "-rf", "dist", "build", external=True)
+    session.install("aiomysql")
+    # session.run("rm", "-rf", "dist", "build", external=True)
     session.run("python", "setup.py", "--quiet", "sdist", "bdist_wheel")
 
 
