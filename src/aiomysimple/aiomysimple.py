@@ -42,39 +42,39 @@ class Operation:
         self.value = value
 
     @classmethod
-    def lt(cls, value: typing.Any) -> Operation:
+    def lt(cls, value: typing.Any) -> "Operation":
         return cls("<", value)
 
     @classmethod
-    def gt(cls, value: typing.Any) -> Operation:
+    def gt(cls, value: typing.Any) -> "Operation":
         return cls(">", value)
 
     @classmethod
-    def eq(cls, value: typing.Any) -> Operation:
+    def eq(cls, value: typing.Any) -> "Operation":
         return cls("=", value)
 
     @classmethod
-    def ne(cls, value: typing.Any) -> Operation:
+    def ne(cls, value: typing.Any) -> "Operation":
         return cls("!=", value)
 
     @classmethod
-    def le(cls, value: typing.Any) -> Operation:
+    def le(cls, value: typing.Any) -> "Operation":
         return cls("<=", value)
 
     @classmethod
-    def ge(cls, value: typing.Any) -> Operation:
+    def ge(cls, value: typing.Any) -> "Operation":
         return cls(">=", value)
 
     @classmethod
-    def not_(cls, value: typing.Any) -> Operation:
+    def not_(cls, value: typing.Any) -> "Operation":
         return cls("NOT", value)
 
     @classmethod
-    def order_by(cls, key: str) -> Operation:
+    def order_by(cls, key: str) -> "Operation":
         return cls("ORDER BY", key)
 
     @classmethod
-    def any_of(cls, *args, **kwargs) -> Operation:
+    def any_of(cls, *args, **kwargs) -> "Operation":
         if args and not kwargs:
             return cls("IN", args)
         elif kwargs and not args:
