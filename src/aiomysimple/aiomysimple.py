@@ -128,6 +128,7 @@ class Table:
         self.id_key = id_key
 
     async def get(self, *args, **kwargs):
+        args = list(args)
         order_by = None
         if args and isinstance(args[0], Operation) and args[0].operation == "ORDER BY":
             order_by = args.pop(0).value
@@ -136,9 +137,7 @@ class Table:
                 self.id_key,
                 self.table_name,
                 f" ORDER BY {order_by}" if order_by else "",
-                " AND ".join(
-                    *args[1:], *[kw_to_query(k, v) for k, v in kwargs.items()]
-                ),
+                " AND ".join(*args, *[kw_to_query(k, v) for k, v in kwargs.items()]),
             )
         else:
             query = "SELECT {} FROM {}{};".format(
